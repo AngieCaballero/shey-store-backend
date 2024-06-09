@@ -2,7 +2,6 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SpecialsOffers } from './entities/specials-offers.entity';
 import { Repository } from 'typeorm';
-import { Users } from '../users/entities/users.entity';
 import { CreateSpecialOfferDto } from './dto/create-special-offer.dto';
 
 @Injectable()
