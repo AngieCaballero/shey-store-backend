@@ -7,7 +7,6 @@ import {
   Param,
   Patch
 } from '@nestjs/common'
-import { UpdateUserDto } from './dto/update-user.dto'
 import { UsersService } from './users.service'
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Users } from './entities/users.entity';
@@ -24,7 +23,7 @@ export class UsersController {
   })
   @Get()
   async findAll() {
-    return this.usersService.findAll()
+    return await this.usersService.findAll()
   }
 
   @ApiOkResponse({
@@ -32,7 +31,7 @@ export class UsersController {
   })
   @Get(':user_id')
   async findUserById(@Param('user_id') id: string) {
-    return this.usersService.findUserById(+id)
+    return await this.usersService.findUserById(+id)
   }
 
   @ApiOkResponse({
@@ -40,7 +39,7 @@ export class UsersController {
   })
   @Get(':email')
   async findUserByEmail(@Param('email') email: string) {
-    return this.usersService.findUserByEmail(email)
+    return await this.usersService.findUserByEmail(email)
   }
 
   @ApiOkResponse({
@@ -51,7 +50,7 @@ export class UsersController {
     if (Object.keys(updateInfoUserDto).length === 0)
       throw new HttpException('Body cannot be empty', 400)
 
-    return this.usersService.update(+id, updateInfoUserDto)
+    return await this.usersService.update(+id, updateInfoUserDto)
   }
 
   @ApiOkResponse({
@@ -59,6 +58,6 @@ export class UsersController {
   })
   @Delete(':user_id')
   async remove(@Param('user_id') id: string) {
-    return this.usersService.remove(+id)
+    return await this.usersService.remove(+id)
   }
 }
