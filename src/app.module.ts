@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { SpecialOffersModule } from './specials-offers/specials-offers.module';
 import { CategoryModule } from './category/category.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { CategoryModule } from './category/category.module';
     UsersModule,
     AuthModule,
     SpecialOffersModule,
-    CategoryModule
+    CategoryModule,
+    ProductModule
   ],
   controllers: [AppController],
   providers: [AppService],
