@@ -1,10 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Users {
   @ApiProperty()
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({type: 'int'})
   id: number
 
   @ApiProperty()
@@ -20,10 +20,31 @@ export class Users {
   password?: string
 
   @ApiProperty()
-  @Column({ length: 25, nullable: true })
-  auth_strategy?: string
+  @Column({  nullable: true })
+  full_name?: string
 
   @ApiProperty()
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date
+  @Column({  nullable: true })
+  gender: string
+
+  @ApiProperty()
+  @Column({  nullable: true })
+  phone?: string
+
+  @ApiProperty()
+  @Column({  nullable: true })
+  photo?: string
+
+  @ApiProperty()
+  @Column({  nullable: true })
+  role?: string
+
+
+  @ApiProperty()
+  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+  public created_at: Date;
+
+  @ApiProperty()
+  @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
+  public updated_at: Date;
 }

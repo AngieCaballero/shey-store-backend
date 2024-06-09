@@ -26,10 +26,10 @@ export class AuthController {
   }
 
   @ApiOkResponse({
-    type: RegisterDto
+    type: TokenDto
   })
   @Post('register')
-  async register(@Body() user: RegisterDto) {
+  async register(@Body() user: LoginDto) {
     // check if body is empty
     if (Object.keys(user).length === 0)
       throw new HttpException(

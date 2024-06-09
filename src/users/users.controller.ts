@@ -5,15 +5,13 @@ import {
   Get,
   HttpException,
   Param,
-  Patch,
-  UseGuards,
+  Patch
 } from '@nestjs/common'
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UsersService } from './users.service'
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { TokenDto } from '../auth/dto/token.dto';
 import { Users } from './entities/users.entity';
+import { UpdateInfoUserDto } from './dto/update-info-user.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -24,7 +22,6 @@ export class UsersController {
     type: Users,
     isArray: true
   })
-  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     return this.usersService.findAll()
@@ -50,14 +47,11 @@ export class UsersController {
     type: Users
   })
   @Patch(':user_id')
-  async update(@Param('user_id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    if (Object.keys(updateUserDto).length === 0)
+  async update(@Param('user_id') id: string, @Body() updateInfoUserDto: UpdateInfoUserDto) {
+    if (Object.keys(updateInfoUserDto).length === 0)
       throw new HttpException('Body cannot be empty', 400)
 
-    if (updateUserDto.password.length < 4)
-      throw new HttpException('Password must be at least 4 characters', 400)
-
-    return this.usersService.update(+id, updateUserDto)
+    return this.usersService.update(+id, updateInfoUserDto)
   }
 
   @ApiOkResponse({

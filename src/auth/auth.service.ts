@@ -42,7 +42,7 @@ export class AuthService {
     return { ...user, token }
   }
 
-  async register(user: RegisterDto): Promise<RegisterDto> {
+  async register(user: RegisterDto) {
     if (!(await this.isEmailValid(user.email))) {
       throw new HttpException('Formato de correo invalido', 400)
     }
@@ -64,7 +64,19 @@ export class AuthService {
 
     user.password = await hash(user.password, 10);
 
-    return await this.usersService.create(user);
+    const newUser = await this.usersService.create(user);
+
+    const payload = {
+      id: newUser.id,
+      email: user.email,
+    }
+
+    const token = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: '1d',
+    })
+    delete user.password
+    return { ...payload, token };
   }
 
 
@@ -74,7 +86,7 @@ export class AuthService {
   }
 
   async isPasswordValid(password: string): Promise<boolean> {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,}$/;
     return passwordRegex.test(password);
   }
 }

@@ -4,8 +4,8 @@ import { HttpException } from '@nestjs/common/exceptions'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { RegisterDto } from '../auth/dto/register.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
 import { Users } from './entities/users.entity'
+import { UpdateInfoUserDto } from './dto/update-info-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +13,7 @@ export class UsersService {
     @InjectRepository(Users) private readonly userRepo: Repository<Users>,
   ) {}
 
-  async create(createUserDto: RegisterDto): Promise<RegisterDto> {
+  async create(createUserDto: RegisterDto): Promise<Users> {
     const userExists = await this.userRepo.findOne({
       where: { email: createUserDto.email },
     })
@@ -23,7 +23,9 @@ export class UsersService {
     }
     const user = this.userRepo.create(createUserDto)
 
-    return await this.userRepo.save(user)
+    await this.userRepo.save(user)
+
+    return user
   }
 
   async findAll(): Promise<Users[]> {
@@ -52,14 +54,15 @@ export class UsersService {
     return user
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<Users> {
+  async update(id: number, updateInfoUserDto: UpdateInfoUserDto): Promise<Users> {
     const userExists = await this.findUserById(id)
 
     if (!userExists) {
       throw new HttpException('User not found', 404)
     }
 
-    const user = this.userRepo.merge(userExists, updateUserDto)
+    const user = this.userRepo.merge(userExists, updateInfoUserDto)
+
 
     return await this.userRepo.save(user)
   }
