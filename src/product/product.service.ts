@@ -33,7 +33,7 @@ export class ProductService {
 
     const productExists = await this.productRepository.findOne({
       where: {
-        id
+        id: id
       }
     })
     if (!productExists) {

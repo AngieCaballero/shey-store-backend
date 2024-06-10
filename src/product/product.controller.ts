@@ -24,8 +24,8 @@ export class ProductController {
   @ApiOkResponse({
     type: Product
   })
-  @Put('product_id')
-  async update(@Body() createProductDto: CreateProductDto, @Param('product_id') product_id: string) {
+  @Put(':product_id')
+  async update(@Body() createProductDto: CreateProductDto, @Param('product_id') product_id: number) {
     if (Object.keys(createProductDto).length === 0){
       throw new HttpException("Bad Request", HttpStatus.BAD_REQUEST)
     }

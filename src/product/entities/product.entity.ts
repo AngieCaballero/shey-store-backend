@@ -29,6 +29,14 @@ export class Product {
   rate: string
 
   @ApiProperty()
+  @Column( 'text', {array: true, nullable: true})
+  presentation_images?: string[]
+
+  @ApiProperty()
+  @Column({type: 'text', nullable: true})
+  description?: string
+
+  @ApiProperty()
   @OneToOne(() => Category, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'category_id' })
   category: Category
