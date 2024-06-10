@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common'
-import { HttpException } from '@nestjs/common/exceptions'
+import { Injectable } from '@nestjs/common';
+import { HttpException } from '@nestjs/common/exceptions';
 
-import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
-import { RegisterDto } from '../auth/dto/register.dto'
-import { Users } from './entities/users.entity'
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { RegisterDto } from '../auth/dto/register.dto';
+import { Users } from './entities/users.entity';
 import { UpdateInfoUserDto } from './dto/update-info-user.dto';
 
 @Injectable()
