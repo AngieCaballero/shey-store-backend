@@ -36,8 +36,8 @@ export class CartController {
   @ApiOkResponse({
     type: Cart
   })
-  @Delete(':user_id/:product_id')
-  async removeItemFromCart(@Param('user_id') user_id: number, @Param('product_id') product_id: number){
-    return await this.cartService.removeItemFromCart(user_id, product_id)
+  @Delete(':user_id/:item_cart_id')
+  async removeItemFromCart(@Param('user_id') user_id: number, @Param('item_cart_id') item_cart_id: number){
+    return await this.cartService.removeItemFromCart(user_id, item_cart_id)
   }
 }

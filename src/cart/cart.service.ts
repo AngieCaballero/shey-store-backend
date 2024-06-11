@@ -40,7 +40,7 @@ export class CartService {
         return item.product_id == createCartItemDto.product_id
       });
 
-      if (itemIndex > -1) {
+      if (itemIndex > -1 && userHasCart.cartItems[itemIndex].color === createCartItemDto.color) {
         let item = userHasCart.cartItems[itemIndex];
         userHasCart.cartItems[itemIndex] = this.cartItemRepository.merge(item, createCartItemDto);
         return await this.cartRepository.save(userHasCart);
@@ -73,14 +73,15 @@ export class CartService {
 
     return this.cartRepository.remove(userHasCart)
   }
-  async removeItemFromCart(user_id: number, product_id: number) {
+
+  async removeItemFromCart(user_id: number, item_cart_id: number) {
     const userHasCart = await this.checkIfUserHasCart(user_id);
     if (!userHasCart){
       throw new HttpException("Cart does not exist", HttpStatus.NOT_FOUND);
     }
 
     const itemCart = await this.cartItemRepository.findOneBy({
-      product_id: product_id
+      id: item_cart_id
     })
 
     if (!itemCart) {
