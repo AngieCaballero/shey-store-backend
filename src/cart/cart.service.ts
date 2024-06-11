@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from './entities/cart.entity';
 import { Repository } from 'typeorm';
@@ -54,6 +54,40 @@ export class CartService {
     } else {
       return await this.create(user_id, createCartItemDto);
     }
+  }
+
+  async findByUserId(user_id: number) {
+    const userHasCart = await this.checkIfUserHasCart(user_id)
+
+    if (!userHasCart) {
+      throw new HttpException("Cart does not exist", HttpStatus.NOT_FOUND);
+    }
+    return userHasCart
+  }
+
+  async deleteCart(user_id: number) {
+    const userHasCart = await this.checkIfUserHasCart(user_id);
+    if (!userHasCart) {
+      throw new HttpException("Cart does not exist", HttpStatus.NOT_FOUND);
+    }
+
+    return this.cartRepository.remove(userHasCart)
+  }
+  async removeItemFromCart(user_id: number, product_id: number) {
+    const userHasCart = await this.checkIfUserHasCart(user_id);
+    if (!userHasCart){
+      throw new HttpException("Cart does not exist", HttpStatus.NOT_FOUND);
+    }
+
+    const itemCart = await this.cartItemRepository.findOneBy({
+      product_id: product_id
+    })
+
+    if (!itemCart) {
+      throw new HttpException("Product not exists", HttpStatus.NOT_FOUND)
+    }
+
+    return this.cartItemRepository.remove(itemCart)
   }
 
   async checkIfUserHasCart(user_id: number) {
