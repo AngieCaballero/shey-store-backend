@@ -23,6 +23,7 @@ export class CartService {
     const cartItem = this.cartItemRepository.create(cartItemDto);
 
     cartItem.product_id = product.id
+    cartItem.product = product
 
     const cart = this.cartRepository.create({
       user_id: user.id,
@@ -48,6 +49,7 @@ export class CartService {
         const product = await this.productService.findById(createCartItemDto.product_id);
         const cartItem = this.cartItemRepository.create(createCartItemDto)
         cartItem.product_id = product.id
+        cartItem.product = product
         userHasCart.cartItems.push(cartItem);
         return await this.cartRepository.save(userHasCart);
       }
@@ -99,7 +101,9 @@ export class CartService {
         },
       },
       relations: {
-        cartItems: true
+        cartItems: {
+          product: true
+        }
       },
     });
   }

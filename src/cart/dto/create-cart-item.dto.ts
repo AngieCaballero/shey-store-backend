@@ -18,8 +18,4 @@ export class CreateCartItemDto {
   @ApiProperty()
   @IsNumber()
   total_price: number
-
-  @ApiProperty()
-  @IsNumber()
-  price_by_unit: number
 }

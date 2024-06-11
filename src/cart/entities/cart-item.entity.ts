@@ -17,9 +17,6 @@ export class CartItem {
   total_price: number;
 
   @Column()
-  price_by_unit: number;
-
-  @Column()
   product_id: number;
 
   @ManyToOne(() => Product, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
