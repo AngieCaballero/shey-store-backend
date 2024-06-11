@@ -13,7 +13,7 @@ export class CartItem {
   @Column()
   quantity: number;
 
-  @Column()
+  @Column({type: 'float'})
   total_price: number;
 
   @Column()

@@ -54,6 +54,7 @@ export class CartService {
         return await this.cartRepository.save(userHasCart);
       }
     } else {
+      if (userHasCart) await this.deleteCart(user_id)
       return await this.create(user_id, createCartItemDto);
     }
   }
