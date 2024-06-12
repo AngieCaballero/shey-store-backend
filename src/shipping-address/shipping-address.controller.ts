@@ -21,7 +21,7 @@ export class ShippingAddressController {
   @ApiOkResponse({
     type: ShippingAddress,
   })
-  @Put(':user_id/:shipping_address_id')
+  @Put('user/:user_id/shipping-address/:shipping_address_id')
   async update(
     @Param('user_id') user_id: number,
     @Param('shipping_address_id') shipping_address_id: number,
