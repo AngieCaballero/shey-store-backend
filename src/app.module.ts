@@ -10,6 +10,7 @@ import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
 import { ShippingAddressModule } from './shipping-address/shinpping-address.module';
+import { PaymentMethodModule } from './payment-method/payment-method.module';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { ShippingAddressModule } from './shipping-address/shinpping-address.modu
     CategoryModule,
     ProductModule,
     CartModule,
-    ShippingAddressModule
+    ShippingAddressModule,
+    PaymentMethodModule
   ],
   controllers: [AppController],
   providers: [AppService],
