@@ -6,6 +6,7 @@ import { UsersService } from '../users/users.service';
 import { CartItem } from './entities/cart-item.entity';
 import { CreateCartItemDto } from './dto/create-cart-item.dto';
 import { ProductService } from '../product/product.service';
+import { OrderStatus } from '../order/enums/order-status.enum';
 
 @Injectable()
 export class CartService {
@@ -28,6 +29,7 @@ export class CartService {
     const cart = this.cartRepository.create({
       user_id: user.id,
       cartItems: [cartItem],
+      status: OrderStatus.IN_PROGRESS
     });
 
     return this.cartRepository.save(cart);
@@ -57,6 +59,12 @@ export class CartService {
       if (userHasCart) await this.deleteCart(user_id)
       return await this.create(user_id, createCartItemDto);
     }
+  }
+
+  async changeStatusCart(new_status: OrderStatus, user_id: number) {
+    const cart = await this.findByUserId(user_id)
+    cart.status = new_status
+    return await this.cartRepository.save(cart);
   }
 
   async findByUserId(user_id: number) {
@@ -100,6 +108,7 @@ export class CartService {
         user: {
           id: user_id,
         },
+        status: OrderStatus.IN_PROGRESS
       },
       relations: {
         cartItems: {
