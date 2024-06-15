@@ -4,6 +4,7 @@ import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './entities/order.entity';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { OrderStatus } from './enums/order-status.enum';
 
 @ApiTags('Order')
 @Controller('order')
@@ -18,9 +19,15 @@ export class OrderController {
     return await this.orderService.create(user_id, createOrderDto);
   }
 
-  @Get('user/:user_id')
-  async findByUserId(@Param('user_id') user_id: number) {
-    return await this.orderService.findByUserId(user_id);
+  @Get('user/:user_id/status/:status_id')
+  async findByUserId(@Param('user_id') user_id: number, @Param('status_id') status_id: number) {
+    let orderStatus: OrderStatus
+    if (status_id == 1) {
+      orderStatus = OrderStatus.IN_PROGRESS
+    } else {
+      orderStatus = OrderStatus.COMPLETED
+    }
+    return await this.orderService.findByUserId(user_id, orderStatus);
   }
 
   @Put(':order_id/user/:user_id')

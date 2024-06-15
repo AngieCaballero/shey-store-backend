@@ -44,14 +44,15 @@ export class OrderService {
     return await this.orderRepository.remove(order)
   }
 
-  async findByUserId(user_id: number) {
+  async findByUserId(user_id: number, status: OrderStatus) {
     const user = await this.usersService.findUserById(user_id)
 
     const order = await this.orderRepository.find({
       where: {
         user: {
           id: user_id,
-        }
+        },
+        status: status
       },
       relations: {
         user: true,
