@@ -4,13 +4,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn, UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { OrderStatus } from '../enums/order-status.enum';
-import { CartItem } from '../../cart/entities/cart-item.entity';
 import { Users } from '../../users/entities/users.entity';
 import { Cart } from '../../cart/entities/cart.entity';
 

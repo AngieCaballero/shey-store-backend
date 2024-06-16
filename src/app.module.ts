@@ -12,6 +12,7 @@ import { CartModule } from './cart/cart.module';
 import { ShippingAddressModule } from './shipping-address/shinpping-address.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { OrderModule } from './order/order.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { OrderModule } from './order/order.module';
     CartModule,
     ShippingAddressModule,
     PaymentMethodModule,
-    OrderModule
+    OrderModule,
+    ReviewModule
   ],
   controllers: [AppController],
   providers: [AppService],
