@@ -46,6 +46,10 @@ export class ProductService {
     return await this.productRepository.save(productUpdated)
   }
 
+  async saveProduct(product: Product) {
+    return await this.productRepository.save(product)
+  }
+
   async findById(id: number) : Promise<Product> {
     const productExists = await this.productRepository.findOne({
       where: { id },
@@ -65,8 +69,7 @@ export class ProductService {
   async findAll(): Promise<Product[]> {
     return await this.productRepository.find({
       relations: {
-        category: true,
-        review: true
+        category: true
       }
     });
   }

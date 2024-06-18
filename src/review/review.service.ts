@@ -21,7 +21,11 @@ export class ReviewService {
 
     const review = this.reviewRepository.create(createReviewDto)
     review.user = user;
-    review.product = product;
+
+    const sumTotalReviews = product.review.reduce((n, {rating}) => n + rating, 0) + review.rating;
+    product.rate = (sumTotalReviews / (product.review.length)).toFixed(1).toString()
+
+    review.product = await this.productService.saveProduct(product);
 
     const reviewSaved = await this.reviewRepository.save(review);
     return this.findById(reviewSaved.id)
