@@ -51,6 +51,15 @@ export class ReviewService {
         product: {
           id: product_id
         }
+      },
+      select: {
+        user: {
+          username: true,
+          photo: true
+        }
+      },
+      relations: {
+        user: true
       }
     })
   }
