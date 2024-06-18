@@ -44,4 +44,14 @@ export class ReviewService {
 
     return review
   }
+
+  async findReviewByProduct(product_id: number) {
+    return await this.reviewRepository.find({
+      where: {
+        product: {
+          id: product_id
+        }
+      }
+    })
+  }
 }
