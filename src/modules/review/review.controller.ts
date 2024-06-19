@@ -17,6 +17,10 @@ export class ReviewController {
     return await this.reviewService.create(user_id, product_id, createReviewDto)
   }
 
+  @ApiOkResponse({
+    type: Review,
+    isArray: true
+  })
   @Get('product/:product_id')
   async findReviewByProductId(@Param('product_id') product_id: number) {
     return await this.reviewService.findReviewByProduct(product_id)

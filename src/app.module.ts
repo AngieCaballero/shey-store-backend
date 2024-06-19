@@ -3,16 +3,16 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '@nestjs/config'
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { SpecialOffersModule } from './specials-offers/specials-offers.module';
-import { CategoryModule } from './category/category.module';
-import { ProductModule } from './product/product.module';
-import { CartModule } from './cart/cart.module';
-import { ShippingAddressModule } from './shipping-address/shinpping-address.module';
-import { PaymentMethodModule } from './payment-method/payment-method.module';
-import { OrderModule } from './order/order.module';
-import { ReviewModule } from './review/review.module';
+import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { SpecialOffersModule } from './modules/specials-offers/specials-offers.module';
+import { CategoryModule } from './modules/category/category.module';
+import { ProductModule } from './modules/product/product.module';
+import { CartModule } from './modules/cart/cart.module';
+import { ShippingAddressModule } from './modules/shipping-address/shinpping-address.module';
+import { PaymentMethodModule } from './modules/payment-method/payment-method.module';
+import { OrderModule } from './modules/order/order.module';
+import { ReviewModule } from './modules/review/review.module';
 
 @Module({
   imports: [
