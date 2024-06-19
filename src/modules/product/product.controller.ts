@@ -1,12 +1,8 @@
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ProductService } from './product.service';
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
-import { Roles } from '../../decorators/role.decorator';
-import { Role } from '../users/enums/role.enum';
-import { RolesGuard } from '../../common/guards/auth.guards';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @ApiTags('Product')
 @Controller('product')
