@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from '../enums/role.enum';
 
 export class UpdateInfoUserDto{
   @ApiProperty()
@@ -27,7 +28,6 @@ export class UpdateInfoUserDto{
   photo: string
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  role: string
+  @IsEnum(Role)
+  role: Role
 }

@@ -1,14 +1,12 @@
 import {
   Column,
   CreateDateColumn,
-  Entity, JoinColumn,
-  OneToMany,
-  OneToOne,
+  Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Cart } from '../../cart/entities/cart.entity';
+import { Role } from '../enums/role.enum';
 
 @Entity()
 export class Users {
@@ -45,9 +43,8 @@ export class Users {
   photo?: string
 
   @ApiProperty()
-  @Column({  nullable: true })
-  role?: string
-
+  @Column({type: 'enum', enum: Role, default: Role.BUYER})
+  role?: Role
 
   @ApiProperty()
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })

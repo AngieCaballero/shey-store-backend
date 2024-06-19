@@ -10,6 +10,13 @@ async function bootstrap() {
     .setTitle('Shey Store API')
     .setDescription('Shey Store API Doc')
     .setVersion('1.0')
+    .addBearerAuth({
+        description: 'Default JWT Authorization',
+        type: 'http',
+        in: 'header',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      })
     .addTag('Shey Store')
     .build()
 
