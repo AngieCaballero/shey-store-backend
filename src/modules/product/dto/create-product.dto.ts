@@ -36,6 +36,10 @@ export class CreateProductDto {
   presentation_images: string[]
 
   @ApiProperty()
+  @IsArray()
+  colors: string[]
+
+  @ApiProperty()
   @IsNumber()
   category_id: number
 }

@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CartItem } from './cart-item.entity';
 import { Users } from '../../users/entities/users.entity';
 import { OrderStatus } from '../../order/enums/order-status.enum';
-import { Order } from '../../order/entities/order.entity';
 
 @Entity()
 export class Cart {

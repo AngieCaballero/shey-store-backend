@@ -34,6 +34,10 @@ export class Product {
   presentation_images?: string[]
 
   @ApiProperty()
+  @Column( 'text', {array: true, nullable: true})
+  colors?: string[]
+
+  @ApiProperty()
   @Column({type: 'text', nullable: true})
   description?: string
 
