@@ -16,12 +16,17 @@ async function bootstrap() {
         in: 'header',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-      })
+      },
+      "access-token")
     .addTag('Shey Store')
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('api/docs', app, document)
+  SwaggerModule.setup('api/docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true
+    }
+  })
 
   app.useGlobalInterceptors(new ResponseInterceptor())
   app.useGlobalPipes(new ValidationPipe())

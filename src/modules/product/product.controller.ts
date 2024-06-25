@@ -1,8 +1,11 @@
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ProductService } from './product.service';
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
+import { Role } from '../users/enums/role.enum';
+import { Roles } from '../../decorators/role.decorator';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @ApiTags('Product')
 @Controller('product')
@@ -12,13 +15,10 @@ export class ProductController {
   @ApiOkResponse({
     type: Product
   })
-  @Post()
-  async create(@Body() createProductDto: CreateProductDto) {
-    if (Object.keys(createProductDto).length === 0){
-      throw new HttpException("Bad Request", HttpStatus.BAD_REQUEST)
-    }
-
-    return await this.productService.create(createProductDto)
+  @Roles(Role.SELLER, Role.ADMIN)
+  @Post('user/:user_id')
+  async create(@Body() createProductDto: CreateProductDto, @Param('user_id') user_id: number) {
+    return await this.productService.create(createProductDto, user_id)
   }
 
   @ApiOkResponse({

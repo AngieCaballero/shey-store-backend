@@ -1,7 +1,8 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Category } from '../../category/entities/category.entity';
 import { Review } from '../../review/entities/review.entity';
+import { Users } from '../../users/entities/users.entity';
 
 @Entity()
 export class Product {
@@ -41,8 +42,11 @@ export class Product {
   @Column({type: 'text', nullable: true})
   description?: string
 
-  @ApiProperty()
-  @OneToOne(() => Category, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => Users, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  users: Users;
+
+  @ManyToOne(() => Category,{ onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'category_id' })
   category: Category
 

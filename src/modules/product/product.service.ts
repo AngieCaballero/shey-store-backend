@@ -4,16 +4,23 @@ import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { CategoryService } from '../category/category.service';
 import { CreateProductDto } from './dto/create-product.dto';
+import { CreateReviewDto } from '../review/dto/create-review.dto';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product) private readonly productRepository: Repository<Product>,
-    @Inject(forwardRef(() => CategoryService)) private readonly categoryService: CategoryService
+    @Inject(forwardRef(() => CategoryService)) private readonly categoryService: CategoryService,
+    @Inject(forwardRef(() => UsersService)) private readonly usersService: UsersService
   ) {
   }
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user_id: number) {
+    const user = await this.usersService.findUserById(user_id);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const category = await this.categoryService.findById(createProductDto.category_id)
 
     if (!category) {
@@ -22,6 +29,7 @@ export class ProductService {
 
     const product = this.productRepository.create(createProductDto)
     product.category = category
+    product.users = user
     return await this.productRepository.save(product)
   }
 
