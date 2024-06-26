@@ -4,7 +4,6 @@ import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { CategoryService } from '../category/category.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { CreateReviewDto } from '../review/dto/create-review.dto';
 import { UsersService } from '../users/users.service';
 
 @Injectable()

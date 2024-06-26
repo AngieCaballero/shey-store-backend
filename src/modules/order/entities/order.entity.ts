@@ -32,9 +32,9 @@ export class Order {
 
   @ApiProperty()
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
-  public created_at: Date;
+  created_at: Date;
 
   @ApiProperty()
   @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
-  public updated_at: Date;
+  updated_at: Date;
 }

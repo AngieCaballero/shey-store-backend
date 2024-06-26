@@ -7,6 +7,7 @@ import { CartItem } from './entities/cart-item.entity';
 import { CreateCartItemDto } from './dto/create-cart-item.dto';
 import { ProductService } from '../product/product.service';
 import { OrderStatus } from '../order/enums/order-status.enum';
+import { compareSync } from 'bcrypt';
 
 @Injectable()
 export class CartService {
@@ -22,7 +23,7 @@ export class CartService {
     const user = await this.usersService.findUserById(user_id);
     const product = await this.productService.findById(cartItemDto.product_id);
 
-    product.quantity = product.quantity - cartItemDto.quantity;
+    product.quantity -= cartItemDto.quantity;
 
     if (product.quantity <= 0) {
       throw new HttpException('Product not available', HttpStatus.CONFLICT);
@@ -55,7 +56,7 @@ export class CartService {
       if (itemIndex > -1 && userHasCart.cartItems[itemIndex].color === createCartItemDto.color) {
 
         const product = await this.productService.findById(createCartItemDto.product_id)
-        product.quantity = product.quantity - createCartItemDto.quantity
+        product.quantity -= createCartItemDto.quantity;
 
         if (product.quantity <= 0) {
           throw new HttpException('Product not available', HttpStatus.CONFLICT);
@@ -70,7 +71,7 @@ export class CartService {
       } else {
 
         const product = await this.productService.findById(createCartItemDto.product_id);
-        product.quantity = product.quantity - createCartItemDto.quantity;
+        product.quantity -= createCartItemDto.quantity;
         if (product.quantity <= 0) {
           throw new HttpException('Product not available', HttpStatus.CONFLICT);
         }
@@ -110,6 +111,12 @@ export class CartService {
       throw new HttpException("Cart does not exist", HttpStatus.NOT_FOUND);
     }
 
+    for (const cartItem of userHasCart.cartItems) {
+      const product = await this.productService.findById(cartItem.product_id)
+      product.quantity += cartItem.quantity;
+      await this.productService.saveProduct(product)
+    }
+
     return this.cartRepository.remove(userHasCart)
   }
 
@@ -126,6 +133,12 @@ export class CartService {
     if (!itemCart) {
       throw new HttpException("Product not exists", HttpStatus.NOT_FOUND)
     }
+
+    const product = await this.productService.findById(itemCart.product_id)
+
+    product.quantity += itemCart.quantity
+
+    await this.productService.saveProduct(product)
 
     return this.cartItemRepository.remove(itemCart)
   }
