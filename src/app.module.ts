@@ -13,6 +13,7 @@ import { ShippingAddressModule } from './modules/shipping-address/shinpping-addr
 import { PaymentMethodModule } from './modules/payment-method/payment-method.module';
 import { OrderModule } from './modules/order/order.module';
 import { ReviewModule } from './modules/review/review.module';
+import { ReportModule } from './modules/report/report.module';
 
 @Module({
   imports: [
@@ -39,7 +40,8 @@ import { ReviewModule } from './modules/review/review.module';
     ShippingAddressModule,
     PaymentMethodModule,
     OrderModule,
-    ReviewModule
+    ReviewModule,
+    ReportModule
   ],
   controllers: [AppController],
   providers: [AppService],

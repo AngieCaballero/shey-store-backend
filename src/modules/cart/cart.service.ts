@@ -8,12 +8,14 @@ import { CreateCartItemDto } from './dto/create-cart-item.dto';
 import { ProductService } from '../product/product.service';
 import { OrderStatus } from '../order/enums/order-status.enum';
 import { compareSync } from 'bcrypt';
+import { Report } from '../report/entities/report.entity';
 
 @Injectable()
 export class CartService {
   constructor(
     @InjectRepository(Cart) private readonly cartRepository: Repository<Cart>,
     @InjectRepository(CartItem) private readonly cartItemRepository: Repository<CartItem>,
+    @InjectRepository(Report) private readonly reportRepository: Repository<Report>,
     @Inject(forwardRef(() => ProductService)) private readonly productService: ProductService,
     @Inject(forwardRef(() => UsersService)) private readonly usersService: UsersService,
   ) {
@@ -92,6 +94,13 @@ export class CartService {
 
   async changeStatusCart(new_status: OrderStatus, user_id: number) {
     const cart = await this.findByUserId(user_id)
+    for (const item of cart.cartItems) {
+      await this.reportRepository.save({
+        user_id: item.product.users.id,
+        product_id: item.product_id,
+        quantity: item.quantity,
+      });
+    }
     cart.status = new_status
     return await this.cartRepository.save(cart);
   }
@@ -153,7 +162,9 @@ export class CartService {
       },
       relations: {
         cartItems: {
-          product: true
+          product: {
+            users: true
+          }
         }
       },
     });
