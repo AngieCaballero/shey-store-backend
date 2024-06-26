@@ -21,6 +21,15 @@ export class CartService {
   async create(user_id: number, cartItemDto: CreateCartItemDto) {
     const user = await this.usersService.findUserById(user_id);
     const product = await this.productService.findById(cartItemDto.product_id);
+
+    product.quantity = product.quantity - cartItemDto.quantity;
+
+    if (product.quantity <= 0) {
+      throw new HttpException('Product not available', HttpStatus.CONFLICT);
+    }
+
+    await this.productService.saveProduct(product)
+
     const cartItem = this.cartItemRepository.create(cartItemDto);
 
     cartItem.product_id = product.id
@@ -44,14 +53,33 @@ export class CartService {
       });
 
       if (itemIndex > -1 && userHasCart.cartItems[itemIndex].color === createCartItemDto.color) {
+
+        const product = await this.productService.findById(createCartItemDto.product_id)
+        product.quantity = product.quantity - createCartItemDto.quantity
+
+        if (product.quantity <= 0) {
+          throw new HttpException('Product not available', HttpStatus.CONFLICT);
+        }
+
+        await this.productService.saveProduct(product)
+
         let item = userHasCart.cartItems[itemIndex];
         userHasCart.cartItems[itemIndex] = this.cartItemRepository.merge(item, createCartItemDto);
         return await this.cartRepository.save(userHasCart);
+
       } else {
+
         const product = await this.productService.findById(createCartItemDto.product_id);
+        product.quantity = product.quantity - createCartItemDto.quantity;
+        if (product.quantity <= 0) {
+          throw new HttpException('Product not available', HttpStatus.CONFLICT);
+        }
+
+        const productUpdated = await this.productService.saveProduct(product)
+
         const cartItem = this.cartItemRepository.create(createCartItemDto)
         cartItem.product_id = product.id
-        cartItem.product = product
+        cartItem.product = productUpdated
         userHasCart.cartItems.push(cartItem);
         return await this.cartRepository.save(userHasCart);
       }

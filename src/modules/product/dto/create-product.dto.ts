@@ -32,6 +32,10 @@ export class CreateProductDto {
   description: string
 
   @ApiProperty()
+  @IsNumber()
+  quantity: number
+
+  @ApiProperty()
   @IsArray()
   presentation_images: string[]
 

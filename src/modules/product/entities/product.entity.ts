@@ -31,6 +31,10 @@ export class Product {
   rate: string
 
   @ApiProperty()
+  @Column({type: 'int', default: 0})
+  quantity: number
+
+  @ApiProperty()
   @Column( 'text', {array: true, nullable: true})
   presentation_images?: string[]
 
