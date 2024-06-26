@@ -24,7 +24,7 @@ export class ReportService {
     });
 
     const groupedSales = sales.reduce((acc, sale) => {
-      const date = sale.sold_at.toISOString().split('T')[0]; // Obtener solo la fecha en formato YYYY-MM-DD
+      const date = sale.sold_at.toISOString().split('T')[0];
       if (!acc[date]) {
         acc[date] = 0;
       }
