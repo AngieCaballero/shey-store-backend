@@ -33,6 +33,18 @@ export class ProductService {
     return await this.productRepository.save(product)
   }
 
+  async findByUserId(user_id: number) {
+    const user = await this.usersService.findUserById(user_id);
+
+    return await this.productRepository.find({
+      where: {
+        users: {
+          id: user_id
+        }
+      }
+    })
+  }
+
   async update(createProductDto: CreateProductDto, id: number) : Promise<Product> {
     const category = await this.categoryService.findById(createProductDto.category_id)
     if (!category) {

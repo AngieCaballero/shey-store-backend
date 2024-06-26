@@ -32,6 +32,11 @@ export class ProductController {
     return await this.productService.update(createProductDto, +product_id)
   }
 
+  @Get('user/:user_id')
+  async findByUserId(@Param('user_id') user_id: number) {
+    return await this.productService.findByUserId(user_id)
+  }
+
   @Get(':product_id')
   async findById(@Param('product_id') product_id: string) {
     return await this.productService.findById(+product_id)
