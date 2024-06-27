@@ -94,11 +94,15 @@ export class CartService {
 
   async changeStatusCart(new_status: OrderStatus, user_id: number) {
     const cart = await this.findByUserId(user_id)
+    let totalPrice = 0;
     for (const item of cart.cartItems) {
+      totalPrice += item.total_price;
+
       await this.reportRepository.save({
         user_id: item.product.users.id,
         product_id: item.product_id,
         quantity: item.quantity,
+        total_price: totalPrice
       });
     }
     cart.status = new_status
