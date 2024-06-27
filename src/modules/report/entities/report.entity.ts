@@ -21,6 +21,10 @@ export class Report{
   quantity: number;
 
   @ApiProperty()
+  @Column({default: 0})
+  category_id: number
+
+  @ApiProperty()
   @Column({ type: 'float', default: 0 })
   total_price: number;
 

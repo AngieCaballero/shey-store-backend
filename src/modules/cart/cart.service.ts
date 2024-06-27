@@ -102,6 +102,7 @@ export class CartService {
         user_id: item.product.users.id,
         product_id: item.product_id,
         quantity: item.quantity,
+        category_id: item.product.category.id,
         total_price: totalPrice
       });
     }
@@ -167,7 +168,8 @@ export class CartService {
       relations: {
         cartItems: {
           product: {
-            users: true
+            users: true,
+            category: true
           }
         }
       },

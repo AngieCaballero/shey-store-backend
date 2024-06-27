@@ -16,4 +16,9 @@ export class ReportController {
   async getSalesStatisticsByUser(@Param('user_id') user_id: string) {
     return await this.reportService.getSalesStatisticsByDayForUser(+user_id)
   }
+
+  @Get('top-categories-by-user/user/:user_id')
+  async getTopCategoriesByUser(@Param('user_id') user_id: string) {
+    return await this.reportService.getTopCategoriesByUser(+user_id)
+  }
 }

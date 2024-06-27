@@ -8,7 +8,8 @@ import { Report } from './entities/report.entity';
 @Injectable()
 export class ReportService {
   constructor(
-    @InjectRepository(Report) private readonly reportRepository: Repository<Report>
+    @InjectRepository(Report) private readonly reportRepository: Repository<Report>,
+    @Inject(forwardRef(() => ProductService)) private readonly productService: ProductService,
   ) {
   }
 
@@ -56,5 +57,39 @@ export class ReportService {
     }, {});
 
     return Object.entries(groupedSales).map(([date, total_price]) => ({ date, total_price }));
+  }
+
+  async getTopCategoriesByUser(userId: number): Promise<any> {
+    const sales = await this.reportRepository.find({
+      where: {
+        user_id: userId,
+      },
+      select: {
+        product_id: true,
+        quantity: true,
+      },
+    });
+
+    const productSalesMap = new Map<string, number>();
+
+    for (const sale of sales) {
+      const product = await this.productService.findById(sale.product_id)
+      if (product) {
+        const category = product.category.name;
+        if (!productSalesMap.has(category)) {
+          productSalesMap.set(category, 0);
+        }
+        productSalesMap.set(category, productSalesMap.get(category) + sale.quantity);
+      }
+    }
+
+    const result = Array.from(productSalesMap.entries()).map(([category, totalQuantity]) => ({
+      category,
+      totalQuantity,
+    }));
+
+    result.sort((a, b) => b.totalQuantity - a.totalQuantity);
+
+    return result;
   }
 }
