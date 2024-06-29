@@ -23,6 +23,11 @@ export class ReportController {
     return await this.reportService.getTopCategoriesByUser(+user_id)
   }
 
+  @Get('product-sold-count-by-user/:user_id')
+  async getProductSoldCountByUser(@Param('user_id') user_id: string) {
+    return await this.reportService.getProductsSoldByUser(+user_id)
+  }
+
   @ApiOkResponse({
     type: Users,
     isArray: true

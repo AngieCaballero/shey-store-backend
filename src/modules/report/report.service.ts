@@ -95,6 +95,32 @@ export class ReportService {
     return result;
   }
 
+  async getProductsSoldByUser(userId: number): Promise<any[]> {
+    const sales = await this.reportRepository.find({
+      where: { user_id: userId },
+      select: ['product_id', 'quantity'],
+    });
+
+    const productSalesMap = sales.reduce((acc, sale) => {
+      if (acc[sale.product_id]) {
+        acc[sale.product_id] += sale.quantity;
+      } else {
+        acc[sale.product_id] = sale.quantity;
+      }
+      return acc;
+    }, {});
+
+    const result = Object.keys(productSalesMap).map(productId => ({
+      product_id: parseInt(productId),
+      total_quantity: productSalesMap[productId],
+    }));
+
+    result.sort((a, b) => b.total_quantity - a.total_quantity);
+
+    return result;
+  }
+
+
   async usersReport() {
     return await this.usersRepository.find({
       where: [
