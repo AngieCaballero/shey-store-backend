@@ -1,14 +1,16 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ProductService } from '../product/product.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from '../product/entities/product.entity';
 import { Repository } from 'typeorm';
 import { Report } from './entities/report.entity';
+import { Role } from '../users/enums/role.enum';
+import { Users } from '../users/entities/users.entity';
 
 @Injectable()
 export class ReportService {
   constructor(
     @InjectRepository(Report) private readonly reportRepository: Repository<Report>,
+    @InjectRepository(Users) private readonly usersRepository: Repository<Users>,
     @Inject(forwardRef(() => ProductService)) private readonly productService: ProductService,
   ) {
   }
@@ -91,5 +93,17 @@ export class ReportService {
     result.sort((a, b) => b.totalQuantity - a.totalQuantity);
 
     return result;
+  }
+
+  async usersReport() {
+    return await this.usersRepository.find({
+      where: [
+        { role: Role.BUYER },
+        { role: Role.SELLER }
+      ],
+      order: {
+        role: 'DESC'
+      }
+    })
   }
 }

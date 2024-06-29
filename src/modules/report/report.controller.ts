@@ -1,6 +1,7 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Param } from '@nestjs/common';
 import { ReportService } from './report.service';
+import { Users } from '../users/entities/users.entity';
 
 @ApiTags('Report')
 @Controller('report')
@@ -20,5 +21,15 @@ export class ReportController {
   @Get('top-categories-by-user/user/:user_id')
   async getTopCategoriesByUser(@Param('user_id') user_id: string) {
     return await this.reportService.getTopCategoriesByUser(+user_id)
+  }
+
+  @ApiOkResponse({
+    type: Users,
+    isArray: true
+  })
+  @Get('users-report')
+  async usersReport() {
+    console.log('Seller')
+    return await this.reportService.usersReport()
   }
 }
