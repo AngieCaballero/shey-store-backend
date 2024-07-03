@@ -28,6 +28,11 @@ export class ReportController {
     return await this.reportService.getProductsSoldByUser(+user_id)
   }
 
+  @Get('product-sold-global')
+  async getProductSold() {
+    return await this.reportService.getProductsSoldGlobal()
+  }
+
   @ApiOkResponse({
     type: Users,
     isArray: true

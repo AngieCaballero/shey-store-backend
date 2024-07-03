@@ -101,7 +101,20 @@ export class ReportService {
       select: ['product_id', 'quantity'],
     });
 
-    const productSalesMap = sales.reduce((acc, sale) => {
+    const productSalesMap = await this.getProductSales(sales)
+
+    const result = Object.keys(productSalesMap).map(productId => ({
+      product_id: parseInt(productId),
+      total_quantity: productSalesMap[productId],
+    }));
+
+    result.sort((a, b) => b.total_quantity - a.total_quantity);
+
+    return result;
+  }
+
+  async getProductSales(sales: Report[]) {
+    return sales.reduce((acc, sale) => {
       if (acc[sale.product_id]) {
         acc[sale.product_id] += sale.quantity;
       } else {
@@ -109,6 +122,14 @@ export class ReportService {
       }
       return acc;
     }, {});
+  }
+
+  async getProductsSoldGlobal(): Promise<any[]> {
+    const sales = await this.reportRepository.find({
+      select: ['product_id', 'quantity'],
+    });
+
+    const productSalesMap = await this.getProductSales(sales)
 
     const result = Object.keys(productSalesMap).map(productId => ({
       product_id: parseInt(productId),
