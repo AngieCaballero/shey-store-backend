@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  nest-api:
+    build:
+      context: .
+    env_file: 
+      - .env
+    ports:
+      - "3000:3001"
+    volumes:
+      - .:/home/app:cached
+      - /home/app/node_modules
+    command: ["pnpm", "run", "start:dev"]
