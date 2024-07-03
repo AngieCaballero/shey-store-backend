@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  postgres:
+    env_file:
+      - ../.env
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./sql-scripts:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:
