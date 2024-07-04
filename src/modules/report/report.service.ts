@@ -77,7 +77,7 @@ export class ReportService {
       const date = new Date();
       date.setDate(today.getDate() - i);
       const dateString = date.toISOString().split('T')[0];
-      salesMap.set(dateString, { date: dateString, total_quantity: 0 });
+      salesMap.set(dateString, { date: dateString, total_price: 0 });
     }
 
     sales.forEach(sale => {
