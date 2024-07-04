@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ProductService } from '../product/product.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { Report } from './entities/report.entity';
 import { Role } from '../users/enums/role.enum';
 import { Users } from '../users/entities/users.entity';
@@ -16,9 +16,14 @@ export class ReportService {
   }
 
   async getSalesStatisticsByDay(user_id: number) {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+
     const sales = await this.reportRepository.find({
       where: {
-        user_id: user_id
+        user_id: user_id,
+        sold_at: MoreThanOrEqual(sevenDaysAgo)
       },
       select: {
         sold_at: true,
@@ -26,22 +31,40 @@ export class ReportService {
       }
     });
 
-    const groupedSales = sales.reduce((acc, sale) => {
-      const date = sale.sold_at.toISOString().split('T')[0];
-      if (!acc[date]) {
-        acc[date] = 0;
-      }
-      acc[date] += sale.quantity;
-      return acc;
-    }, {});
+    const salesMap = new Map();
+    for (let i = 0; i < 7; i++) {
+      const date = new Date();
+      date.setDate(today.getDate() - i);
+      const dateString = date.toISOString().split('T')[0];
+      salesMap.set(dateString, { date: dateString, total_quantity: 0 });
+    }
 
-    return Object.entries(groupedSales).map(([date, total_quantity]) => ({ date, total_quantity }));
+    sales.forEach(sale => {
+      const dateString = sale.sold_at.toISOString().split('T')[0];
+      if (salesMap.has(dateString)) {
+        salesMap.get(dateString).total_quantity += sale.quantity;
+      } else {
+        salesMap.set(dateString, { date: dateString, total_quantity: sale.quantity });
+      }
+    });
+
+    const result = Array.from(salesMap.values());
+
+    result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    return result;
   }
 
   async getSalesStatisticsByDayForUser(userId: number): Promise<any> {
+
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+
     const sales = await this.reportRepository.find({
       where: {
-        user_id: userId
+        user_id: userId,
+        sold_at: MoreThanOrEqual(sevenDaysAgo)
       },
       select: {
         sold_at: true,
@@ -49,16 +72,28 @@ export class ReportService {
       }
     });
 
-    const groupedSales = sales.reduce((acc, sale) => {
-      const date = sale.sold_at.toISOString().split('T')[0];
-      if (!acc[date]) {
-        acc[date] = 0;
-      }
-      acc[date] += sale.total_price;
-      return acc;
-    }, {});
+    const salesMap = new Map();
+    for (let i = 0; i < 7; i++) {
+      const date = new Date();
+      date.setDate(today.getDate() - i);
+      const dateString = date.toISOString().split('T')[0];
+      salesMap.set(dateString, { date: dateString, total_quantity: 0 });
+    }
 
-    return Object.entries(groupedSales).map(([date, total_price]) => ({ date, total_price }));
+    sales.forEach(sale => {
+      const dateString = sale.sold_at.toISOString().split('T')[0];
+      if (salesMap.has(dateString)) {
+        salesMap.get(dateString).total_price += sale.total_price;
+      } else {
+        salesMap.set(dateString, { date: dateString, total_price: sale.total_price });
+      }
+    });
+
+    const result = Array.from(salesMap.values());
+
+    result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    return result;
   }
 
   async getTopCategoriesByUser(userId: number): Promise<any> {
