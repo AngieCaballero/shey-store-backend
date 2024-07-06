@@ -1,10 +1,13 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ProductService } from '../product/product.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThanOrEqual, Repository } from 'typeorm';
 import { Report } from './entities/report.entity';
 import { Role } from '../users/enums/role.enum';
 import { Users } from '../users/entities/users.entity';
+import  * as tmp from 'tmp'
+import * as XlsxPopulate from 'xlsx-populate'
+
 
 @Injectable()
 export class ReportService {
@@ -178,6 +181,59 @@ export class ReportService {
     return result;
   }
 
+  async generateTopCategoriesExcel(user_id: number) {
+    const data = await this.getTopCategoriesByUser(user_id)
+
+    const workbook= await XlsxPopulate.fromBlankAsync()
+    const sheet = workbook.sheet(0);
+
+    data.forEach((item: any, index: number) => {
+      const row = index + 2;
+      sheet.cell(`B${row}`).value(item.category);
+      sheet.cell(`C${row}`).value(item.totalQuantity);
+    });
+
+    sheet.cell('B1').value('Categoría');
+    sheet.cell('C1').value('Cantidad');
+
+    return workbook.outputAsync()
+  }
+
+  async generateProductsSoldQuantity(user_id: number) {
+    const data = await this.getSalesStatisticsByDay(user_id)
+
+    const workbook= await XlsxPopulate.fromBlankAsync()
+    const sheet = workbook.sheet(0);
+
+    data.forEach((item: any, index: number) => {
+      const row = index + 2;
+      sheet.cell(`B${row}`).value(item.date);
+      sheet.cell(`C${row}`).value(item.total_quantity);
+    });
+
+    sheet.cell('B1').value('Fecha');
+    sheet.cell('C1').value('Cantidad');
+
+    return workbook.outputAsync()
+  }
+
+  async generateIncome(user_id: number) {
+    const data = await this.getSalesStatisticsByDayForUser(user_id)
+
+    const workbook= await XlsxPopulate.fromBlankAsync()
+    const sheet = workbook.sheet(0);
+
+    data.forEach((item: any, index: number) => {
+      const row = index + 2;
+      sheet.cell(`B${row}`).value(item.date);
+      sheet.cell(`C${row}`).value(`$${item.total_price.toFixed(2)}`);
+    });
+
+    sheet.cell('B1').value('Fecha');
+    sheet.cell('C1').value('Ingresos');
+
+    return workbook.outputAsync()
+  }
 
   async usersReport() {
     return await this.usersRepository.find({
