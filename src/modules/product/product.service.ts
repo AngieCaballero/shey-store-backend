@@ -85,6 +85,16 @@ export class ProductService {
     return productExists
   }
 
+  async findByIdWithoutCheck(id: number) : Promise<Product> {
+    return await this.productRepository.findOne({
+      where: { id },
+      relations: {
+        category: true,
+        review: true
+      }
+    })
+  }
+
   async findAll(): Promise<Product[]> {
     return await this.productRepository.find({
       relations: {

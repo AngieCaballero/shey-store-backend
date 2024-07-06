@@ -68,7 +68,8 @@ export class ReportService {
       },
       select: {
         sold_at: true,
-        total_price: true
+        total_price: true,
+        product_id: true
       }
     });
 
@@ -104,13 +105,14 @@ export class ReportService {
       select: {
         product_id: true,
         quantity: true,
+        category_id: true
       },
     });
 
     const productSalesMap = new Map<string, number>();
 
     for (const sale of sales) {
-      const product = await this.productService.findById(sale.product_id)
+      const product = await this.productService.findByIdWithoutCheck(sale.product_id)
       if (product) {
         const category = product.category.name;
         if (!productSalesMap.has(category)) {
