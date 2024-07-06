@@ -14,6 +14,7 @@ import { PaymentMethodModule } from './modules/payment-method/payment-method.mod
 import { OrderModule } from './modules/order/order.module';
 import { ReviewModule } from './modules/review/review.module';
 import { ReportModule } from './modules/report/report.module';
+import { BackupModule } from './modules/backup/backup.module'
 
 @Module({
   imports: [
@@ -41,7 +42,8 @@ import { ReportModule } from './modules/report/report.module';
     PaymentMethodModule,
     OrderModule,
     ReviewModule,
-    ReportModule
+    ReportModule,
+    BackupModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -31,10 +31,12 @@
     "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.2",
     "@types/passport-jwt": "^4.0.1",
+    "@types/xlsx-populate": "git+https://github.com/JanLoebel/types-xlsx-populate.git",
     "bcrypt": "^5.1.1",
     "buffer": "^6.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "dotenv": "^16.4.5",
     "husky": "^9.0.11",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -44,8 +46,7 @@
     "tmp": "^0.2.3",
     "typeorm": "^0.3.20",
     "xlsx": "^0.18.5",
-    "xlsx-populate": "^1.21.0",
-    "@types/xlsx-populate": "git+https://github.com/JanLoebel/types-xlsx-populate.git"
+    "xlsx-populate": "^1.21.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
