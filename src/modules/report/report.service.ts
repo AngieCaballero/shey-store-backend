@@ -1,7 +1,7 @@
 import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ProductService } from '../product/product.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { MoreThan, MoreThanOrEqual, Repository } from 'typeorm'
 import { Report } from './entities/report.entity';
 import { Role } from '../users/enums/role.enum';
 import { Users } from '../users/entities/users.entity';
@@ -164,19 +164,59 @@ export class ReportService {
     }, {});
   }
 
-  async getProductsSoldGlobal(): Promise<any[]> {
-    const sales = await this.reportRepository.find({
-      select: ['product_id', 'quantity'],
+  async generateProductSoldGlobalExcel() {
+    const data = await this.getProductsSoldGlobal()
+
+    const workbook= await XlsxPopulate.fromBlankAsync()
+    const sheet = workbook.sheet(0);
+
+    data.forEach((item: any, index: number) => {
+      const row = index + 2;
+      sheet.cell(`B${row}`).value(item.date);
+      sheet.cell(`C${row}`).value(item.count);
     });
 
-    const productSalesMap = await this.getProductSales(sales)
+    sheet.cell('B1').value('Fecha');
+    sheet.cell('C1').value('Cantidad');
 
-    const result = Object.keys(productSalesMap).map(productId => ({
-      product_id: parseInt(productId),
-      total_quantity: productSalesMap[productId],
-    }));
+    return workbook.outputAsync()
+  }
 
-    result.sort((a, b) => b.total_quantity - a.total_quantity);
+  async getProductsSoldGlobal(): Promise<any[]> {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+
+    const sales = await this.reportRepository.find({
+      where: {
+        sold_at: MoreThanOrEqual(sevenDaysAgo)
+      },
+      select: {
+        sold_at: true,
+        quantity: true
+      }
+    });
+
+    const salesMap = new Map();
+    for (let i = 0; i < 7; i++) {
+      const date = new Date();
+      date.setDate(today.getDate() - i);
+      const dateString = date.toISOString().split('T')[0];
+      salesMap.set(dateString, { date: dateString, total_quantity: 0 });
+    }
+
+    sales.forEach(sale => {
+      const dateString = sale.sold_at.toISOString().split('T')[0];
+      if (salesMap.has(dateString)) {
+        salesMap.get(dateString).total_quantity += sale.quantity;
+      } else {
+        salesMap.set(dateString, { date: dateString, total_quantity: sale.quantity });
+      }
+    });
+
+    const result = Array.from(salesMap.values());
+
+    result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
     return result;
   }
@@ -235,15 +275,57 @@ export class ReportService {
     return workbook.outputAsync()
   }
 
+  async generateUsersReportExcel() {
+    const data = await this.usersReport()
+
+    const workbook= await XlsxPopulate.fromBlankAsync()
+    const sheet = workbook.sheet(0);
+
+    data.forEach((item: any, index: number) => {
+      const row = index + 2;
+      sheet.cell(`B${row}`).value(item.date);
+      sheet.cell(`C${row}`).value(item.count);
+    });
+
+    sheet.cell('B1').value('Fecha');
+    sheet.cell('C1').value('Cantidad');
+
+    return workbook.outputAsync()
+  }
+
   async usersReport() {
-    return await this.usersRepository.find({
-      where: [
-        { role: Role.BUYER },
-        { role: Role.SELLER }
-      ],
-      order: {
-        role: 'DESC'
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // 7 days ago
+
+    const users = await this.usersRepository.find({
+      where: {
+        created_at: MoreThanOrEqual(sevenDaysAgo),
+      },
+      select: ['created_at'],
+    });
+
+    const countsMap = users.reduce((acc, user) => {
+      const date = user.created_at.toISOString().split('T')[0];
+      if (!acc[date]) {
+        acc[date] = 0;
       }
-    })
+      acc[date]++;
+      return acc;
+    }, {});
+
+    const result = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(sevenDaysAgo);
+      date.setDate(sevenDaysAgo.getDate() + i);
+      const dateString = date.toISOString().split('T')[0];
+      result.push({
+        date: dateString,
+        count: countsMap[dateString] || 0,
+      });
+    }
+
+    return result;
   }
 }

@@ -9,7 +9,7 @@ dotenv.config();
 @Injectable()
 export class BackupService {
   private readonly dbUser = process.env.POSTGRES_USER;
-  private readonly dbHost = process.env.POSTGRES_HOST;
+  private readonly dbHost = process.env.POSTGRES_HOST ;
   private readonly dbName = process.env.POSTGRES_DB;
   private readonly dbPassword = process.env.POSTGRES_PASSWORD;
   private readonly dbPort = process.env.POSTGRES_PORT;

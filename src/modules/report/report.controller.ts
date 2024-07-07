@@ -24,6 +24,27 @@ export class ReportController {
     return await this.reportService.getTopCategoriesByUser(+user_id)
   }
 
+  @Get('download-users-report')
+  @Header('Content-Type',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  )
+  @Header('Content-Disposition', 'attachment; filename=users-report-statistics.xlsx')
+  async downloadUsersReport(@Res() res: Response) {
+    const result = await this.reportService.generateUsersReportExcel()
+    return res.send(result)
+  }
+
+
+  @Get('download-product-sold-global-report')
+  @Header('Content-Type',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  )
+  @Header('Content-Disposition', 'attachment; filename=product-sold-global-statistics.xlsx')
+  async downloadProductSoldGlobalReport(@Res() res: Response) {
+    const result = await this.reportService.generateProductSoldGlobalExcel()
+    res.send(result)
+  }
+
   @Get('product-sold-count-by-user/user/:user_id')
   async getProductSoldCountByUser(@Param('user_id') user_id: string) {
     return await this.reportService.getProductsSoldByUser(+user_id)
@@ -50,7 +71,7 @@ export class ReportController {
   )
   @Header('Content-Disposition', 'attachment; filename=top-categories-statistics.xlsx')
   async downloadTopCategories(@Param('user_id') user_id: string, @Res() res: Response) {
-    let result = await this.reportService.generateTopCategoriesExcel(+user_id)
+    const result = await this.reportService.generateTopCategoriesExcel(+user_id)
     return res.send(result)
   }
 
@@ -60,7 +81,7 @@ export class ReportController {
   )
   @Header('Content-Disposition', 'attachment; filename=product-sold-statistics.xlsx')
   async downloadProductsSoldQuantity(@Param('user_id') user_id: string, @Res() res: Response) {
-    let result = await this.reportService.generateProductsSoldQuantity(+user_id)
+    const result = await this.reportService.generateProductsSoldQuantity(+user_id)
     return res.send(result)
   }
 
@@ -70,7 +91,7 @@ export class ReportController {
   )
   @Header('Content-Disposition', 'attachment; filename=income-statistics.xlsx')
   async downloadIncome(@Param('user_id') user_id: string, @Res() res: Response) {
-    let result = await this.reportService.generateIncome(+user_id)
+    const result = await this.reportService.generateIncome(+user_id)
     return res.send(result)
   }
 }
